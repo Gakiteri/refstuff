@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  homeassistant:
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    container_name: homeassistant
+    hostname: homeassist
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - 61122:8123
+    networks:
+      revproxy:
+        ipv4_address: 10.0.1.22
+    volumes:
+      - /data/homeassist/:/config/
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true
