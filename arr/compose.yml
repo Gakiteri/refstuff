@@ -1,0 +1,104 @@
+version: "3.5"
+
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: torrent
+    hostname: torrent
+    restart: unless-stopped
+    ports:
+      - 61015:61015
+      - 6881:6881
+      - 6881:6881/udp
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.15
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ="Europe/Madrid"
+      - WEBUI_PORT=61015
+    volumes:
+      - /data/arr/torrent/:/config/
+      - /UnsecurePool/commonshare/Torrent/:/downloads/
+
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    hostname: jackett
+    restart: unless-stopped
+    ports:
+      - 61016:9117
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.16
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ="Europe/Madrid"
+      - AUTO_UPDATE=false #optional
+    volumes:
+      - /data/arr/jacket/:/config/
+      - /UnsecurePool/commonshare/Torrent/:/downloads/
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    hostname: radarr
+    restart: unless-stopped
+    ports:
+      - 61017:7878
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.17
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ="Europe/Madrid"
+    volumes:
+      - /data/arr/radarr/:/config/
+      - /UnsecurePool/commonshare/Pelis/:/movies/
+      - /UnsecurePool/commonshare/Torrent/:/downloads/
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    hostname: sonarr
+    restart: unless-stopped
+    ports:
+      - 61018:8989
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.18
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ="Europe/Madrid"
+    volumes:
+      - /data/arr/sonarr/:/config/
+      - /UnsecurePool/commonshare/Series/:/tv/
+      - /UnsecurePool/commonshare/Torrent/:/downloads/
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    hostname: lidarr
+    restart: unless-stopped
+    ports:
+      - 61019:8686
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.19
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ="Europe/Madrid"
+    volumes:
+      - /data/arr/lidarr/:/config/
+      - /UnsecurePool/commonshare/Music/:/music/
+      - /UnsecurePool/commonshare/Torrent/:/downloads/
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

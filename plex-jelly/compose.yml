@@ -1,0 +1,81 @@
+version: '3.4'
+
+services:
+  plex:
+    image: plexinc/pms-docker:latest
+    container_name: plex
+    hostname: plex
+    restart: unless-stopped
+    ports:
+      # Plex Media Server
+      - 32400:32400/tcp
+      # Unknown
+      - 3005:3005/tcp
+      # controlling Plex for Roku via Plex Companion
+      - 8324:8324/tcp
+      # access to the Plex DLNA Server
+      - 1900:1900/udp
+      - 32469:32469/tcp
+      # current GDM network discovery
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.9
+    environment:
+      - TZ=Europe/Madrid
+      - PLEX_CLAIM=${PLEX_CLAIM}
+      - ADVERTISE_IP=${ADVERTISE_IP}
+      - hostname=plex
+      - "NVIDIA_DRIVER_CAPABILITIES=all"
+      - "NVIDIA_VISIBLE_DEVICES=all"
+    volumes:
+      - /data/plex/database:/config
+      - /data/plex/transcode:/transcode
+      - /UnsecurePool/commonshare/Pelis/:/data/pelis/
+      - /UnsecurePool/commonshare/Series/:/data/series/
+      - /UnsecurePool/commonshare/Anime/:/data/anime/
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    hostname: jellyfin
+    restart: unless-stopped
+    ports:
+      # HTTP/S traffic
+      - 61023:8096/tcp
+      - 62023:8920/tcp
+      # Discovery
+      - 1901:1900/udp # Service
+      - 7359:7359/udp # Client
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.23
+    volumes:
+      - /data/jellyfin/config/:/config/
+      - /data/jellyfin/cache/:/cache/
+      - /UnsecurePool/commonshare/Pelis/:/media/pelis/
+      - /UnsecurePool/commonshare/Series/:/media/series/
+      - /UnsecurePool/commonshare/Anime/:/media/anime/
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  node-red:
+    image: nodered/node-red:latest-minimal
+    container_name: node-red
+    hostname: node-red
+    ports:
+      - 61008:1880
+      - 62008:443
+      - 63018:63018
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.8
+    environment:
+      NODE_ENV: 'production'
+#    user: "node-red"
+    volumes:
+      - /data/node-red/:/data/
+      - /data/acme/:/acme/
+      - /data/logs/:/logs/
+    restart: unless-stopped
+    #privileged: true
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

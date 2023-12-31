@@ -1,0 +1,48 @@
+version: "3.4"
+
+services:
+  tdarr:
+    image: ghcr.io/haveagitgat/tdarr:latest
+    container_name: tdarr
+    restart: unless-stopped
+    ports:
+      - 8265:8265 # webUI port
+      - 8266:8266 # server port
+      - 8267:8267 # Internal node port
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.10
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=0
+      - PGID=0
+      - UMASK_SET=002
+      - serverIP=10.0.0.10
+      - serverPort=8266
+      - webUIPort=8265
+      - internalNode=true
+      - nodeID=DatacenterNode
+      - nodeIP=0.0.0.0
+      - nodePort=8267
+      - "NVIDIA_DRIVER_CAPABILITIES=all"
+      - "NVIDIA_VISIBLE_DEVICES=all"
+    volumes:
+      - /data/tdarr/server:/app/server
+      - /data/tdarr/configs:/app/configs
+      - /data/tdarr/logs:/app/logs
+      - /data/tdarr/temp/:/temp/
+      - /UnsecurePool/commonshare/Anime/:/media/anime/
+      - /UnsecurePool/commonshare/Pelis/:/media/pelis/
+      - /UnsecurePool/commonshare/Series/:/media/series/
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

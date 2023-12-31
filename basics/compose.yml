@@ -1,0 +1,107 @@
+version: '3.5'
+
+services:
+  ### TRAEFIK ###
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    hostname: traefik
+    restart: unless-stopped
+    depends_on:
+      - "pihole"
+    ports:
+      - 80:80
+      - 443:443
+      - 853:853
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.2
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - ACME_DNS_API_BASE=https://auth.acme-dns.io
+      - ACME_DNS_STORAGE_PATH=/acme/acme.json
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_API_KEY=${CF_API_KEY}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /data/acme/:/acme/
+      - /data/logs/:/traefik-logs/
+      - /data/traefik/etc-hosts:/etc/hosts:ro
+      - /data/traefik/etc-traefik/:/etc/traefik/
+
+  ### OAUTH - GOOGLE AUTH###
+  oauth:
+    image: thomseddon/traefik-forward-auth:latest
+    container_name: oauth
+    hostname: oauth
+    restart: unless-stopped
+    depends_on:
+      - "traefik"
+    ports:
+      - 4181:4181
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.21
+    environment:
+      - CONFIG=/secrets
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN}
+      - INSECURE_COOKIE=false
+      - AUTH_HOST=${AUTH_HOST}
+      - URL_PATH=/_oauth
+#      - LOG_LEVEL=info
+#      - LOG_FORMAT=text
+      - LIFETIME=86400 # 1 day
+      - DEFAULT_ACTION=auth
+      - DEFAULT_PROVIDER=google
+    volumes:
+      - /data/oauth/secrets:/secrets:ro
+
+
+  ### PIHOLE ###
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    hostname: pihole-datacenter
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - 61003:80
+      - 62003:443
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.3
+    environment:
+      TZ: 'Europe/Madrid'
+      WEBPASSWORD: ''
+    volumes:
+      - /data/pihole/etc-pihole/:/etc/pihole/
+      - /data/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/
+      - /data/pihole/secrets.json:/secrets.json:ro
+    cap_add:
+      - NET_ADMIN
+
+  ### HOMARR ###
+  homarr:
+    image: ghcr.io/ajnart/homarr:latest
+    container_name: homarr
+    hostname: homarr
+    restart: unless-stopped
+    ports:
+      - 61006:7575
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.6
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /data/homarr/resolv.conf:/etc/resolv.conf:ro
+      #- /data/homarr/hosts:/etc/hosts:ro
+      - /data/homarr/configs/:/app/data/configs/
+      - /data/homarr/icons/:/app/public/icons/
+      - /data/homarr/data/:/data/
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

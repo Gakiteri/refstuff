@@ -1,0 +1,29 @@
+version: '3.5'
+
+services:
+  ### SFTP ###
+  sftp:
+    image: drakkan/sftpgo:v2.5-alpine-slim
+    container_name: sftp
+    restart: unless-stopped
+    ports:
+#      - 8080:8080
+      - 61011:8090
+#      - 2022:2022
+#      - 10080:10080
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.11
+    user: "root"
+    environment:
+#      - SFTPGO_WEBDAVD__BINDINGS__0__PORT=10080
+      - SFTPGO_HTTPD__BINDINGS__0__PORT=8090
+    volumes:
+      - /data/sftp/:/var/lib/sftpgo/
+      - /SecurePool/:/data/secure/
+      - /UnsecurePool/commonshare/:/data/common/
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

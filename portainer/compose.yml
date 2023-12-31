@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:latest
+    restart: unless-stopped
+    ports:
+      - 61007:8000
+      - 62007:9443
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.7
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/data/portainer/data:/data'
+    entrypoint: "/portainer"
+
+  portainer_agent:
+    container_name: portainer_agent
+    image: portainer/agent:latest
+    restart: unless-stopped
+    ports:
+      - 9001:9001
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.14
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

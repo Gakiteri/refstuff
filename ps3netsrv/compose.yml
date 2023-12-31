@@ -1,0 +1,27 @@
+version: '3.5'
+
+services:
+  ps3netsrv:
+    image: shawly/ps3netsrv
+    container_name: ps3netsrv
+    restart: unless-stopped
+    ports:
+      - "38008:38008"
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.20
+    environment:
+      TZ: 'Europe/Madrid'
+      USER_ID: 1001
+      GROUP_ID: 1001
+    volumes:
+      - /SecurePool/gakiteri/Emulators/Games-PS3/Folder/:/games/GAMES/
+      - /SecurePool/gakiteri/Emulators/Games-PS3/Keys/:/games/REDKEY/
+      - /SecurePool/gakiteri/Emulators/Games-PS3/ISO/:/games/PS3ISO/
+      - /SecurePool/gakiteri/Emulators/Games-PS2/ISO/:/games/PS2ISO/
+      - /SecurePool/gakiteri/Emulators/Games-PSX/CUE-BIN/:/games/PSXISO/
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

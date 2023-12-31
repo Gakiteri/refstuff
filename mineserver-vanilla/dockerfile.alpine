@@ -1,0 +1,14 @@
+FROM alpine:latest
+
+RUN mkdir /server && \
+    printf "eula=true" > /server/eula.txt
+
+WORKDIR /server
+
+
+RUN apk update && \
+    apk --no-cache add openjdk17-jre-headless && \
+    rm -rf /var/cache/apk/*
+
+
+CMD ["java", "-Xmx8G", "-Xms8G", "-jar", "server.jar", "nogui"]

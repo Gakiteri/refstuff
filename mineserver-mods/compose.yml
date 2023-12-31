@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  mineserver:
+    image: gakiteri/mineserver:jdk8
+    container_name: mineserver-mods
+    hostname: mineserver-mods
+    #restart: unless-stopped
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.13
+    ports:
+      - 25566:25565
+      - 25576:25575
+    volumes:
+      - /data/minecraft-mods/:/server
+
+networks:
+  revproxy:
+    external: true

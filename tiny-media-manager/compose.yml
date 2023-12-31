@@ -1,0 +1,26 @@
+version: '3.5'
+
+services:
+  tinymedia:
+    image: tinymediamanager/tinymediamanager:latest
+    container_name: tinymedia
+    restart: unless-stopped
+    ports:
+      - 61022:4000
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.22
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=1000
+      - LC_ALL=C.UTF-8
+      - LANG=en_GB.UTF-8
+      - TZ='Europe/Madrid'
+    volumes:
+      - /data/tinymedia/:/data/
+      - /UnsecurePool/commonshare/Series/:/media/series/
+      - /UnsecurePool/commonshare/Pelis/:/media/pelis/
+
+networks:
+  revproxy:
+    name: revproxy

@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  mineserver:
+    image: gakiteri/mineserver:jdk17
+    container_name: mineserver-vanilla
+    hostname: mineserver-vanilla
+    restart: unless-stopped
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.12
+    ports:
+      - 25565:25565
+      - 25575:25575
+    volumes:
+      - /data/minecraft-vanilla/:/server
+
+networks:
+  revproxy:
+    external: true
