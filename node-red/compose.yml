@@ -16,6 +16,7 @@ services:
       NODE_ENV: 'production'
 #    user: "node-red"
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/node-red/:/data/
       - /data/acme/:/acme/
       - /data/logs/:/logs/

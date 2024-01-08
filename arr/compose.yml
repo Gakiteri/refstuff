@@ -16,9 +16,10 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ="Europe/Madrid"
+      - TZ=Europe/Madrid
       - WEBUI_PORT=61015
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/arr/torrent/:/config/
       - /UnsecurePool/commonshare/Torrent/:/downloads/
 
@@ -35,9 +36,10 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ="Europe/Madrid"
+      - TZ=Europe/Madrid
       - AUTO_UPDATE=false #optional
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/arr/jacket/:/config/
       - /UnsecurePool/commonshare/Torrent/:/downloads/
 
@@ -54,8 +56,9 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ="Europe/Madrid"
+      - TZ=Europe/Madrid
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/arr/radarr/:/config/
       - /UnsecurePool/commonshare/Pelis/:/movies/
       - /UnsecurePool/commonshare/Torrent/:/downloads/
@@ -73,8 +76,9 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ="Europe/Madrid"
+      - TZ=Europe/Madrid
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/arr/sonarr/:/config/
       - /UnsecurePool/commonshare/Series/:/tv/
       - /UnsecurePool/commonshare/Torrent/:/downloads/
@@ -92,11 +96,30 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ="Europe/Madrid"
+      - TZ=Europe/Madrid
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/arr/lidarr/:/config/
       - /UnsecurePool/commonshare/Music/:/music/
       - /UnsecurePool/commonshare/Torrent/:/downloads/
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    hostname: prowlarr
+    restart: unless-stopped
+    ports:
+      - 61025:9696
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.25
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
+      - /data/arr/prowlarr/:/config/
 
 networks:
   revproxy:

@@ -32,6 +32,7 @@ services:
       - "NVIDIA_DRIVER_CAPABILITIES=all"
       - "NVIDIA_VISIBLE_DEVICES=all"
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/plex/database:/config
       - /data/plex/transcode:/transcode
       - /UnsecurePool/commonshare/Pelis/:/data/pelis/
@@ -61,6 +62,7 @@ services:
       revproxy:
         ipv4_address: 10.0.0.23
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/jellyfin/config/:/config/
       - /data/jellyfin/cache/:/cache/
       - /UnsecurePool/commonshare/Pelis/:/media/pelis/

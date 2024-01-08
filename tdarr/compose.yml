@@ -27,6 +27,7 @@ services:
       - "NVIDIA_DRIVER_CAPABILITIES=all"
       - "NVIDIA_VISIBLE_DEVICES=all"
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/tdarr/server:/app/server
       - /data/tdarr/configs:/app/configs
       - /data/tdarr/logs:/app/logs

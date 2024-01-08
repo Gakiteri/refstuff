@@ -17,6 +17,7 @@ services:
       - LANG=en_GB.UTF-8
       - TZ='Europe/Madrid'
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/tinymedia/:/data/
       - /UnsecurePool/commonshare/Series/:/media/series/
       - /UnsecurePool/commonshare/Pelis/:/media/pelis/

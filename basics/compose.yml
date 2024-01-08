@@ -27,6 +27,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/acme/:/acme/
       - /data/logs/:/traefik-logs/
+#      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/traefik/etc-hosts:/etc/hosts:ro
       - /data/traefik/etc-traefik/:/etc/traefik/
 
@@ -76,6 +77,7 @@ services:
       TZ: 'Europe/Madrid'
       WEBPASSWORD: ''
     volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/pihole/etc-pihole/:/etc/pihole/
       - /data/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/
       - /data/pihole/secrets.json:/secrets.json:ro
@@ -94,8 +96,8 @@ services:
       revproxy:
         ipv4_address: 10.0.0.6
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /data/homarr/resolv.conf:/etc/resolv.conf:ro
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
       #- /data/homarr/hosts:/etc/hosts:ro
       - /data/homarr/configs/:/app/data/configs/
       - /data/homarr/icons/:/app/public/icons/
