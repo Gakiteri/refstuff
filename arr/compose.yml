@@ -23,6 +23,24 @@ services:
       - /data/arr/torrent/:/config/
       - /UnsecurePool/commonshare/Torrent/:/downloads/
 
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    hostname: flaresolverr
+    restart: unless-stopped
+    ports:
+      - 61024:8191
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.24
+    environment:
+      - LOG_LEVEL=info
+      - LOG_HTML=false
+      - CAPTCHA_SOLVER=none
+      - TZ=Europe/Madrid
+    volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
+
   jackett:
     image: lscr.io/linuxserver/jackett:latest
     container_name: jackett
@@ -42,6 +60,24 @@ services:
       - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/arr/jacket/:/config/
       - /UnsecurePool/commonshare/Torrent/:/downloads/
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    hostname: prowlarr
+    restart: unless-stopped
+    ports:
+      - 61025:9696
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.25
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
+      - /data/arr/prowlarr/:/config/
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -103,23 +139,6 @@ services:
       - /UnsecurePool/commonshare/Music/:/music/
       - /UnsecurePool/commonshare/Torrent/:/downloads/
 
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    hostname: prowlarr
-    restart: unless-stopped
-    ports:
-      - 61025:9696
-    networks:
-      revproxy:
-        ipv4_address: 10.0.0.25
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-    volumes:
-      - /data/common/resolv.conf:/etc/resolv.conf:ro
-      - /data/arr/prowlarr/:/config/
 
 networks:
   revproxy:

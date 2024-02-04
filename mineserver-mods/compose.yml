@@ -2,19 +2,21 @@ version: "3"
 
 services:
   mineserver:
-    image: gakiteri/mineserver:jdk8
+    image: gakiteri/mineserver:ojdk21
     container_name: mineserver-mods
     hostname: mineserver-mods
-    #restart: unless-stopped
+    restart: unless-stopped
+    ports:
+      - 25565:25565
+      - 25576:25575
     networks:
       revproxy:
         ipv4_address: 10.0.0.13
-    ports:
-      - 25566:25565
-      - 25576:25575
+    user: 1001:1000
     volumes:
-      - /data/minecraft-mods/:/server
+      - /mnt/wdssd/minecraft-mods-bcg/:/server/
 
 networks:
   revproxy:
+    name: revproxy
     external: true

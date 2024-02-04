@@ -1,5 +1,5 @@
 #!/bin/bash
 
-docker build --rm \
+docker build --rm --no-cache \
     --file dockerfile.alpine \
-    --tag gakiteri/mineserver:jdk8 .
+    --tag gakiteri/mineserver:ojdk21 .

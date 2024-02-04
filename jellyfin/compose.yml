@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    hostname: jellyfin
+    restart: unless-stopped
+    ports:
+      # HTTP/S traffic
+      - 61023:8096/tcp
+      - 62023:8920/tcp
+      # Discovery
+      - 1901:1900/udp # Service
+      - 7359:7359/udp # Client
+    networks:
+      revproxy:
+        ipv4_address: 10.0.0.23
+    volumes:
+      - /data/common/resolv.conf:/etc/resolv.conf:ro
+      - /data/jellyfin/config/:/config/
+      - /data/jellyfin/cache/:/cache/
+      - /UnsecurePool/commonshare/Pelis/:/media/pelis/
+      - /UnsecurePool/commonshare/Series/:/media/series/
+      - /UnsecurePool/commonshare/Anime/:/media/anime/
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+networks:
+  revproxy:
+    name: revproxy
+    external: true

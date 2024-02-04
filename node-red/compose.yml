@@ -3,6 +3,7 @@ version: "3"
 services:
   node-red:
     image: nodered/node-red:latest-minimal
+#    image: nodered/node-red:latest-debian
     container_name: node-red
     hostname: node-red
     ports:
@@ -13,15 +14,19 @@ services:
       revproxy:
         ipv4_address: 10.0.0.8
     environment:
-      NODE_ENV: 'production'
-#    user: "node-red"
+      NODE_ENV: 'dev'
+    user: "1000:1000"
+#    user: "root"
     volumes:
       - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/node-red/:/data/
       - /data/acme/:/acme/
       - /data/logs/:/logs/
+      - /UnsecurePool/commonshare/Torrent/:/sd/downloads/
+      - /SecurePool/common-data/:/sd/downloads-personal/
+      - /fastboi/:/sd/fastboi/
     restart: unless-stopped
-    #privileged: true
+#    privileged: true
 
 networks:
   revproxy:
