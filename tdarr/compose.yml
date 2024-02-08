@@ -1,23 +1,24 @@
-version: "3.4"
+version: "3.5"
 
 services:
   tdarr:
     image: ghcr.io/haveagitgat/tdarr:latest
     container_name: tdarr
+    hostname: tdarr
     restart: unless-stopped
     ports:
-      - 8265:8265 # webUI port
+      - 61012:8265 # webUI port
       - 8266:8266 # server port
       - 8267:8267 # Internal node port
     networks:
       revproxy:
-        ipv4_address: 10.0.0.10
+        ipv4_address: 10.0.0.12
     environment:
       - TZ=Europe/Madrid
       - PUID=0
       - PGID=0
       - UMASK_SET=002
-      - serverIP=10.0.0.10
+      - serverIP=10.0.0.12
       - serverPort=8266
       - webUIPort=8265
       - internalNode=true

@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     networks:
       revproxy:
-        ipv4_address: 10.0.0.12
+        ipv4_address: 10.0.0.9
     ports:
       - 25565:25565
       - 25575:25575

@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  mineserver:
+  mineserver-mods:
     image: gakiteri/mineserver:ojdk21
     container_name: mineserver-mods
     hostname: mineserver-mods
@@ -11,7 +11,7 @@ services:
       - 25576:25575
     networks:
       revproxy:
-        ipv4_address: 10.0.0.13
+        ipv4_address: 10.0.0.10
     user: 1001:1000
     volumes:
       - /mnt/wdssd/minecraft-mods-bcg/:/server/

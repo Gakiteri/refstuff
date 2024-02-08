@@ -43,7 +43,7 @@ services:
       - 4181:4181
     networks:
       revproxy:
-        ipv4_address: 10.0.0.21
+        ipv4_address: 10.0.0.4
     environment:
       - CONFIG=/secrets
       - COOKIE_DOMAIN=${COOKIE_DOMAIN}
@@ -76,25 +76,26 @@ services:
     environment:
       TZ: 'Europe/Madrid'
       WEBPASSWORD: ''
+    cap_add:
+      - NET_ADMIN
     volumes:
       - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/pihole/etc-pihole/:/etc/pihole/
       - /data/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/
       - /data/pihole/secrets.json:/secrets.json:ro
-    cap_add:
-      - NET_ADMIN
 
-  ### HOMARR ###
-  homarr:
+
+  ### LANDING ###
+  landing:
     image: ghcr.io/ajnart/homarr:latest
-    container_name: homarr
-    hostname: homarr
+    container_name: landing
+    hostname: landing
     restart: unless-stopped
     ports:
-      - 61006:7575
+      - 61007:7575
     networks:
       revproxy:
-        ipv4_address: 10.0.0.6
+        ipv4_address: 10.0.0.7
     volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/common/resolv.conf:/etc/resolv.conf:ro

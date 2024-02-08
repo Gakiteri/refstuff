@@ -9,7 +9,7 @@ services:
       - "38008:38008"
     networks:
       revproxy:
-        ipv4_address: 10.0.0.20
+        ipv4_address: 10.0.0.11
     environment:
       TZ: 'Europe/Madrid'
       USER_ID: 1001

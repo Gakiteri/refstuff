@@ -23,14 +23,12 @@ services:
       - 32414:32414/udp
     networks:
       revproxy:
-        ipv4_address: 10.0.0.9
+        ipv4_address: 10.0.0.16
     environment:
       - TZ=Europe/Madrid
       - PLEX_CLAIM=${PLEX_CLAIM}
       - ADVERTISE_IP=${ADVERTISE_IP}
       - hostname=plex
-      - "NVIDIA_DRIVER_CAPABILITIES=all"
-      - "NVIDIA_VISIBLE_DEVICES=all"
     volumes:
       - /data/common/resolv.conf:/etc/resolv.conf:ro
       - /data/plex/database:/config
@@ -40,13 +38,6 @@ services:
       - /UnsecurePool/commonshare/Anime/:/data/anime/
       - "/SecurePool/elocin/nuevo anime/:/data/anime-temp/"
       - "/SecurePool/elocin/Pelis/:/data/pelis-temp"
-#    deploy:
-#      resources:
-#        reservations:
-#          devices:
-#            - driver: nvidia
-#              count: 1
-#              capabilities: [gpu]
 
 networks:
   revproxy:

@@ -4,12 +4,13 @@ services:
   tinymedia:
     image: tinymediamanager/tinymediamanager:latest
     container_name: tinymedia
+    hostname: tinymedia
     restart: unless-stopped
     ports:
-      - 61022:4000
+      - 61013:4000
     networks:
       revproxy:
-        ipv4_address: 10.0.0.22
+        ipv4_address: 10.0.0.13
     environment:
       - USER_ID=1000
       - GROUP_ID=1000
